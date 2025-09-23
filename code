@@ -1,1 +1,76 @@
-#include
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+//calculate thrust
+double calculateThrust(string engineType, double airspeed) {
+    if (engineType == "turbojet") {
+        return airspeed * 0.8;  // lower efficiency
+    } else if (engineType == "turbofan") {
+        return airspeed * 1.2;  // higher efficiency
+    } else {
+        return 0; // invalid 
+    }
+}
+
+//calculate fuel burn 
+double calculateFuel(string engineType, double distance) {
+    if (engineType == "turbojet") {
+        return distance * 5.0;  // turbojets burn more fuel
+    } else if (engineType == "turbofan") {
+        return distance * 3.0;  // turbofans more efficient
+    } else {
+        return 0;
+    }
+}
+
+int main() {
+    string engineType;
+    double airspeed, distance;
+
+    cout << "Turbofan Efficiency Simulator" << endl;
+    cout << "Choose engine type (turbojet/turbofan): ";
+    cin >> engineType;
+
+    cout << "Enter airspeed (m/s): ";
+    cin >> airspeed;
+
+    cout << "Enter flight distance (km): ";
+    cin >> distance;
+
+    // calculate thrust and fuel burn
+    double thrust = calculateThrust(engineType, airspeed);
+    double fuel = calculateFuel(engineType, distance);
+
+    // results
+    cout << fixed << setprecision(2);
+    if (thrust > 0) {
+        cout << "\n--- Simulation Results ---" << endl;
+        cout << "Engine type: " << engineType << endl;
+        cout << "Estimated thrust: " << thrust << " kN" << endl;
+        cout << "Estimated fuel consumption: " << fuel << " liters" << endl;
+
+        //feedback using switch
+        int efficiencyLevel;
+        if (engineType == "turbofan") {
+            efficiencyLevel = 2;
+        } else {
+            efficiencyLevel = 1;
+        }
+
+        switch (efficiencyLevel) {
+            case 1:
+                cout << "Turbojets are less efficient and noisier." << endl;
+                break;
+            case 2:
+                cout << "Turbofans are more efficient and quieter, perfect for modern aviation." << endl;
+                break;
+            default:
+                cout << "Invalid engine type entered." << endl;
+        }
+    } else {
+        cout << "Invalid engine type. Please enter either 'turbojet' or 'turbofan'." << endl;
+    }
+
+    return 0;
+}
