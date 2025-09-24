@@ -1,124 +1,78 @@
-// Turbofan estimator- part 2 of project
-// constants are only for educational purpose, not accurate
-
 #include <iostream>
 #include <iomanip>
-#include <limits>
 #include <vector>
 using namespace std;
 
 struct TFOption {
-    string name;    //profile label
-    double factor; //multiplier vs baseline unit per km
+    string name;
+    double factor;
 };
 
-// ------------ helpers ---------------------
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -------------- calculations ------------------
-static double calcFuel (double distanceKm, double perKm) { return distanceKm * perKm; }
-static double calcCO2 (double fuelUnits, double co2PerFuel) { return fuelUnits * co2PerFuel; }
-
-static void printTurbofanResults (const string& label,double perKm,double distanceKm,int passengers,double co2PerFuel) {
-    double totalFuel = calcFuel (distanceKm, perKm);
-    double totalCO2 = calcCO2 (totalFuel, co2PerFuel);
-
-    cout << "\n[" << label << "]\n";
-    hr();
-    cout << left << setw(30) << "Distance (km)"  << ": " << fixed << setprecision(2) << distanceKm << "\n";
-    cout << left << setw(30) << "Passengers"  << ": " << passengers << "\n";
-    cout << left << setw(30) << "Fuel per km (units)"  << ": " << perKm << "\n";
-    cout << left << setw(30) << "Total fuel
-    cout << left << setw(30) <<
-    cout << left << setw(30) <<
-
-//calculate thrust
-double calculateThrust(string engineType, double airspeed) {
-    if (engineType == "turbojet") {
-        return airspeed * 0.8;  // lower efficiency
-    } else if (engineType == "turbofan") {
-        return airspeed * 1.2;  // higher efficiency
-    } else {
-        return 0; // invalid 
-    }
-}
-
-//calculate fuel burn 
-double calculateFuel(string engineType, double distance) {
-    if (engineType == "turbojet") {
-        return distance * 5.0;  // turbojets burn more fuel
-    } else if (engineType == "turbofan") {
-        return distance * 3.0;  // turbofans more efficient
-    } else {
-        return 0;
-    }
-}
-
 int main() {
-    string engineType;
-    double airspeed, distance;
+    const double BASELINE_PER_KM = 5.0;   //fuel consumed per km
+    const double CO2_PER_FUEL    = 3.16;  //kg of CO2 emissions per fuel unit
 
-    cout << "Turbofan Efficiency Simulator" << endl;
-    cout << "Choose engine type (turbojet/turbofan): ";
-    cin >> engineType;
+    vector<TFOption> options = {
+        {"Low bypass (~15% better)",    0.85},
+        {"Medium bypass (~25% better)", 0.75},
+        {"High bypass (~35% better)",   0.65},
+        {"Geared high-bypass (~40% better)", 0.60}
+    };
 
-    cout << "Enter airspeed (m/s): ";
-    cin >> airspeed;
+    cout << "Welcome To The Turbofan Estimator!\n";
 
-    cout << "Enter flight distance (km): ";
-    cin >> distance;
+    char again = 'y';
+    while (again == 'y' || again == 'Y') {
+        int passengers, choice;
+        double distance;
 
-    // calculate thrust and fuel burn
-    double thrust = calculateThrust(engineType, airspeed);
-    double fuel = calculateFuel(engineType, distance);
-
-    // results
-    cout << fixed << setprecision(2);
-    if (thrust > 0) {
-        cout << "\n--- Simulation Results ---" << endl;
-        cout << "Engine type: " << engineType << endl;
-        cout << "Estimated thrust: " << thrust << " kN" << endl;
-        cout << "Estimated fuel consumption: " << fuel << " liters" << endl;
-
-        //feedback using switch
-        int efficiencyLevel;
-        if (engineType == "turbofan") {
-            efficiencyLevel = 2;
-        } else {
-            efficiencyLevel = 1;
+        //input passengers must be > 0
+        cout << "Number Of Passengers: ";
+        cin >> passengers;
+        while (passengers <= 0) {
+            cout << "Please enter a positive number of passengers: ";
+            cin >> passengers;
         }
 
-        switch (efficiencyLevel) {
-            case 1:
-                cout << "Turbojets are less efficient and noisier." << endl;
-                break;
-            case 2:
-                cout << "Turbofans are more efficient and quieter, perfect for modern aviation." << endl;
-                break;
-            default:
-                cout << "Invalid engine type entered." << endl;
+        //error handling as input must be > 0
+        cout << "Distance (KM): ";
+        cin >> distance;
+        while (distance <= 0) {
+            cout << "Please enter a valid flight distance: ";
+            cin >> distance;
         }
-    } else {
-        cout << "Invalid engine type. Please enter either 'turbojet' or 'turbofan'." << endl;
+
+        // turbofan type
+        cout << "\nChoose turbofan type:\n";
+        for (int i = 0; i < options.size(); i++)
+            cout << " " << (i+1) << ") " << options[i].name << "\n";
+
+        cout << "Your choice: ";
+        cin >> choice;
+        while (choice < 1 || choice > options.size()) {
+            cout << "Please enter a number between 1 and " << options.size() << ": ";
+            cin >> choice;
+        }
+
+        // calculations
+        double perKm = BASELINE_PER_KM * options[choice - 1].factor;
+        double fuel  = distance * perKm;
+        double co2   = fuel * CO2_PER_FUEL;
+        
+        //output
+        cout << fixed << setprecision(2);
+        cout << "\n--- Results ---\n";
+        cout << "Distance (KM):       " << distance << "\n";
+        cout << "Passengers:          " << passengers << "\n";
+        cout << "Fuel per KM:         " << perKm << "\n";
+        cout << "Total fuel:          " << fuel << "\n";
+        cout << "Fuel per passenger:  " << fuel / passengers << "\n";
+        cout << "Estimated CO2 (KG):  " << co2 << "\n";
+        cout << "------------------\n";
+
+        cout << "Would You Like To Run The Program Again? (y/n): ";
+        cin >> again;
     }
 
-    return 0;
+    cout << "Goodbye!\n";
 }
