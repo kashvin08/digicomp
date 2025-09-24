@@ -1,6 +1,54 @@
+// Turbofan estimator- part 2 of project
+// constants are only for educational purpose, not accurate
+
 #include <iostream>
 #include <iomanip>
+#include <limits>
+#include <vector>
 using namespace std;
+
+struct TFOption {
+    string name;    //profile label
+    double factor; //multiplier vs baseline unit per km
+};
+
+// ------------ helpers ---------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// -------------- calculations ------------------
+static double calcFuel (double distanceKm, double perKm) { return distanceKm * perKm; }
+static double calcCO2 (double fuelUnits, double co2PerFuel) { return fuelUnits * co2PerFuel; }
+
+static void printTurbofanResults (const string& label,double perKm,double distanceKm,int passengers,double co2PerFuel) {
+    double totalFuel = calcFuel (distanceKm, perKm);
+    double totalCO2 = calcCO2 (totalFuel, co2PerFuel);
+
+    cout << "\n[" << label << "]\n";
+    hr();
+    cout << left << setw(30) << "Distance (km)"  << ": " << fixed << setprecision(2) << distanceKm << "\n";
+    cout << left << setw(30) << "Passengers"  << ": " << passengers << "\n";
+    cout << left << setw(30) << "Fuel per km (units)"  << ": " << perKm << "\n";
+    cout << left << setw(30) << "Total fuel
+    cout << left << setw(30) <<
+    cout << left << setw(30) <<
 
 //calculate thrust
 double calculateThrust(string engineType, double airspeed) {
