@@ -9,8 +9,8 @@ struct TFOption {
 };
 
 int main() {
-    const double BASELINE_PER_KM = 5.0;   //fuel consumed per km
-    const double CO2_PER_FUEL    = 3.16;  //kg of CO2 emissions per fuel unit
+    const double BASELINE_PER_KM = 5.0;   // fuel consumed per km
+    const double CO2_PER_FUEL    = 3.16;  // kg of CO2 emissions per fuel unit consumed
 
     vector<TFOption> options = {
         {"Low bypass (~15% better)",    0.85},
@@ -26,7 +26,7 @@ int main() {
         int passengers, choice;
         double distance;
 
-        //input passengers must be > 0
+        //passengers must be > 0
         cout << "Number Of Passengers: ";
         cin >> passengers;
         while (passengers <= 0) {
@@ -34,15 +34,15 @@ int main() {
             cin >> passengers;
         }
 
-        //error handling as input must be > 0
-        cout << "Distance (KM): ";
+        //distance must be > 0
+        cout << "Distance (km): ";
         cin >> distance;
         while (distance <= 0) {
-            cout << "Please enter a valid flight distance: ";
+            cout << "Please enter a positive flight distance: ";
             cin >> distance;
         }
 
-        // turbofan type
+        //choose turbofan type
         cout << "\nChoose turbofan type:\n";
         for (int i = 0; i < options.size(); i++)
             cout << " " << (i+1) << ") " << options[i].name << "\n";
@@ -54,12 +54,40 @@ int main() {
             cin >> choice;
         }
 
-        // calculations
+        //calculations
         double perKm = BASELINE_PER_KM * options[choice - 1].factor;
         double fuel  = distance * perKm;
         double co2   = fuel * CO2_PER_FUEL;
-        
-        //output
+
+        //passengers notice 
+        if (passengers < 50) {
+            cout << "\n[Notice!] This is a small passenger load — fuel per person will be high.\n";
+        } else if (passengers >= 50 && passengers <= 200) {
+            cout << "\n[Notice!] This is a medium-sized flight.\n";
+        } else {
+            cout << "\n[Notice!] This is a large passenger load — fuel efficiency per person improves.\n";
+        }
+
+        //switch for turbofan choice
+        switch (choice) {
+            case 1:
+                cout << "[Turbofan] You chose Low bypass —> modestly efficient.\n";
+                break;
+            case 2:
+                cout << "[Turbofan] You chose Medium bypass —> balanced performance.\n";
+                break;
+            case 3:
+                cout << "[Turbofan] You chose High bypass —> very efficient.\n";
+                break;
+            case 4:
+                cout << "[Turbofan] You chose Geared high-bypass —> maximum efficiency!\n";
+                break;
+            default:
+                cout << "[Turbofan] Invalid Choice!\n";
+                break;
+        }
+
+        //results
         cout << fixed << setprecision(2);
         cout << "\n--- Results ---\n";
         cout << "Distance (KM):       " << distance << "\n";
@@ -74,5 +102,5 @@ int main() {
         cin >> again;
     }
 
-    cout << "Goodbye!\n";
+    cout << "Goodbye, Thank You!\n";
 }
